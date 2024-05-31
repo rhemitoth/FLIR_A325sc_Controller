@@ -6,6 +6,7 @@ import time
 import PySpin
 
 
+
 #### Connect to Camera and Grab Image ####
 # Function uses the PySpin library/FLIR Spinnaker SDK
 # to connect to the camera and grab an image
@@ -34,7 +35,7 @@ def save_image_spinnaker(directory, filetype):
 
 		# Grab image
 		image_result = cam.GetNextImage()
-
+	
 		# Save image
 		filename = directory + 'file-' + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
 		image_result.Save(filename)
@@ -74,7 +75,8 @@ def main():
 	focus(tn)
 
 	# Connect to camera using Spinnaker SDK and save an image
-	fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
+	#fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
+	fpath = "pics/"
 	save_image_spinnaker(directory = fpath, filetype = "tiff")
 
 if __name__ == '__main__':
