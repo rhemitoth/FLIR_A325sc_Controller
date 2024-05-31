@@ -14,10 +14,10 @@ def establish_telnet_connection(cam_ip):
 def focus(telnet_connection):
 	telnet_connection.read_until(b'>')
 	telnet_connection.write(b'rset .system.focus.autofull true\n') # telnet command to focus the camera
-	telnet_connection.sleep(5)
+	time.sleep(5)
 
 def main():
-	flir_ip = '169.254.0.1' # Camera IP address
+	flir_ip = '169.254.0.2' # Camera IP address
 	tn = establish_telnet_connection(flir_ip)
 	focus(tn)
 
