@@ -97,36 +97,34 @@ def main():
 	while True:
 		# Check if camera is connected
 		connection_status = check_connection()
-		# If camera is connected, run code.
-		if connection_status == True:
-			# Focus camera if button is pressed
-			if button.is_pressed:
-				# Establish telnet connection and focus the camera
-				flir_ip = '169.254.0.2' 
-				tn = establish_telnet_connection(flir_ip)
-				focus(tn)
+		# Focus camera if button is pressed
+		if button.is_pressed and connection_status == True:
+			# Establish telnet connection and focus the camera
+			flir_ip = '169.254.0.2' 
+			tn = establish_telnet_connection(flir_ip)
+			focus(tn)
 
-			# Check if motion is detected
-			motion = pir.motion_detected
-			
-			if motion == True:
+		# Check if motion is detected
+		motion = pir.motion_detected
+		
+		if motion == True:
 
-				# Turn on indicator light if motion is detected
-				led.on()
+			# Turn on indicator light if motion is detected
+			led.on()
 
-				# Connect to camera using Spinnaker SDK and save an image if motion is detected
-				#fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
-				fpath = "/media/moorcroftlab/9016-4EF8/"
-				if os.path.exists(fpath):
-					save_image_spinnaker(directory = fpath, filetype = "tiff")
+			# Connect to camera using Spinnaker SDK and save an image if motion is detected
+			#fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
+			fpath = "/media/moorcroftlab/9016-4EF8/"
+			if os.path.exists(fpath) and connection_status == True:
+				save_image_spinnaker(directory = fpath, filetype = "tiff")
+				
+			# Set time delay
+			sleep(15)
 
-				# Set time delay
-				sleep(15)
-
-			if motion == False:
-				# Turn of indicator light if no motion is detected
-				led.off()
-				sleep(1)
+		if motion == False:
+			# Turn of indicator light if no motion is detected
+			led.off()
+			sleep(1)
 
 
 if __name__ == '__main__':
