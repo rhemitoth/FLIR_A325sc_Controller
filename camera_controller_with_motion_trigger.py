@@ -52,6 +52,27 @@ def save_image_spinnaker(directory, filetype):
 		system.ReleaseInstance()
 
 
+#### Check for camera connection ####
+# Function generates a list of connected cameras using the FLIR spinnaker SDK 
+# Returns 'False' if no cameras are connected
+# Returns 'True' if a camera is connected
+
+def check_connection():
+	# Initalize the system
+	system = PySpin.System.GetInstance()
+
+	# Get the list of connected cameras
+	cam_list = system.GetCameras()
+
+	# Get length of camera list
+	numcams = len(cam_list)
+
+	# Return true if the camera is connected. Return false is no camera is connected.
+	if numcams > 0:
+		return True
+	else:
+		return False
+
 #### Establishing Telnet Connection ####
 def establish_telnet_connection(cam_ip):
 	telnet_connection = telnetlib.Telnet(cam_ip)
@@ -61,7 +82,7 @@ def establish_telnet_connection(cam_ip):
 def focus(telnet_connection):
 	telnet_connection.read_until(b'>')
 	telnet_connection.write(b'rset .system.focus.autofull true\n') # telnet command to focus the camera
-	time.sleep(5)
+	sleep(5)
 
 #### Main Code ####
 
@@ -74,33 +95,39 @@ def main():
 
 	# Main code
 	while True:
+		# Check if camera is connected
+		connection_status = check_connection()
+		# If camera is connected, run code.
+		if connection_status == True:
+			# Focus camera if button is pressed
+			if button.is_pressed:
+				# Establish telnet connection and focus the camera
+				flir_ip = '169.254.0.2' 
+				tn = establish_telnet_connection(flir_ip)
+				focus(tn)
 
-		# Focus camera if button is pressed
-		if button.is_pressed:
-			# Establish telnet connection and focus the camera
-			flir_ip = '169.254.0.2' 
-			tn = establish_telnet_connection(flir_ip)
-			focus(tn)
+			# Check if motion is detected
+			motion = pir.motion_detected
+			
+			if motion == True:
 
-		# Check if motion is detected
-		motion = pir.motion_detected
-		
-		if motion == True:
+				# Turn on indicator light if motion is detected
+				led.on()
 
-			# Turn on indicator light if motion is detected
-			led.on()
+				# Connect to camera using Spinnaker SDK and save an image if motion is detected
+				#fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
+				fpath = "/media/moorcroftlab/9016-4EF8/"
+				if os.path.exists(fpath):
+					save_image_spinnaker(directory = fpath, filetype = "tiff")
 
-			# Connect to camera using Spinnaker SDK and save an image if motion is detected
-			fpath = "C:/Users/user/Documents/FLIR/Python/pics/"
-			#fpath = "pics/"
-			save_image_spinnaker(directory = fpath, filetype = "tiff")
+				# Set time delay
+				sleep(15)
 
-			# Set time delay
-			time.sleep(15)
+			if motion == False:
+				# Turn of indicator light if no motion is detected
+				led.off()
+				sleep(1)
 
-		if motion == False:
-			# Turn of indicator light if no motion is detected
-			led.off()
 
 if __name__ == '__main__':
 	main()
