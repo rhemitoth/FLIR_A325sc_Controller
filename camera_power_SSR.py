@@ -1,7 +1,7 @@
 # Import libraries
 
 import time
-import RPi.GPIO as GPIO
+import gpiozero
 
 # Set GPIO pin for relay
 
@@ -9,12 +9,18 @@ relay_ch = 21
 
 # Turn on camera using relay
 
-while True:
-	GPIO.setwarnings(False)
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(relay_ch, GPIO.OUT)
-	GPIO.output(relay_ch, GPIO.LOW)
-	GPIO.output(relay_ch, GPIO.HIGH)
-	time.sleep(5)
-	GPIO.cleanup()
 
+
+while True:
+    relay = gpiozero.OutputDevice(relay_ch, active_high = True, initial_value = False)
+    relay.on()
+    print("turned on")
+    time.sleep(8)
+    relay.off()
+    time.sleep(1)
+    print("turned off")
+    relay.close()
+    print("closed relay")
+    time.sleep(2)
+    
+    
