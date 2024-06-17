@@ -90,14 +90,13 @@ def focus(telnet_connection):
 def main():
 
 	# Define LED and PIR sensor GPIO pins on Raspberry Pi
-	led = LED(15) # comment this line out if you aren't using an indicator light
-	pir = MotionSensor(14)
-	button = Button(18)
-	relay = gpiozero.OutputDevice(relay_ch, active_high = True, initial_value = False)
+	led = LED(23) # comment this line out if you aren't using an indicator light
+	pir = MotionSensor(24)
+	relay = gpiozero.OutputDevice(21, active_high = True, initial_value = False)
+
 
 	# Main code
 	while True:
-
 		# Check if motion is detected
 		initial_motion = pir.motion_detected
 		
@@ -107,8 +106,11 @@ def main():
 			led.on()
 
 			# Turn on camera
+			print("turning on camera")
 			relay.on()
+			print("relay on")
 			sleep(10)
+			
 
 			# Check if camera is connected
 			connection_status = check_connection()
@@ -137,17 +139,17 @@ def main():
 				# Exit while loop if motion is no longer detected
 				still_moving = pir.motion_detected
 
-			# Turn camera off and release relay GPIO pin 
+			# Turn relay off
 			relay.off()
-    		sleep(1)
-    		relay.close()
-    		sleep(1)
+			sleep(1)
 
 		if initial_motion == False:
 			# Turn of indicator light if no motion is detected
 			led.off()
 			sleep(1)
-		
+			
+			
+			
 if __name__ == '__main__':
 	main()
 
