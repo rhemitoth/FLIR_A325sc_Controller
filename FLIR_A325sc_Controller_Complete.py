@@ -197,7 +197,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     		save_image_spinnaker(directory = fpath, filetype = "tiff")
     		print ("Image saved.")
     		sleep(10)
-    	elapsed_time = time - start_time
+    	elapsed_time = time.time() - start_time
          
 #### Main Code ####
 
