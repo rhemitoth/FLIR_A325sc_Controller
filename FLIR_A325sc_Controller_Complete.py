@@ -188,14 +188,14 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     	if os.path.exists(fpath) == False:
     		print("WARNING: SD Card missing.")
     		print_to_display(message = "WARNING.\nNo SD card \ndetected.")
-            sd_missing = True
-            while sd_missing == True:
-                sd_missing = os.path.exists(fpath)
-                sleep(1)
-        elif os.path.exists(fpath) and check_connection() == True:
-            print("Capturing image . . .")
-            save_image_spinnaker(directory = fpath, filetype = "tiff")
-            print ("Image saved.")
+    		sd_missing = True
+    		while sd_missing == True:
+    			sd_missing = os.path.exists(fpath)
+    			sleep(1)
+    	elif os.path.exists(fpath) and check_connection() == True:
+    		print("Capturing image . . .")
+    		save_image_spinnaker(directory = fpath, filetype = "tiff")
+    		print ("Image saved.")
             # wait 10 seconds before taking the next picture
             sleep(10) 
         elapsed_time = time - start_time
