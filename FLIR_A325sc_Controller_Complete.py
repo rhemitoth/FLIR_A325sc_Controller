@@ -110,7 +110,7 @@ def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/F
 
 	if deer_on == True:
 		epd = epd2in7_V2.EPD()
-        epd.init()
+		epd.init()
         epd.Clear()
         
         #Create a blank image for drawing
