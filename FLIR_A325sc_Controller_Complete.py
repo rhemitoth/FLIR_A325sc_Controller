@@ -182,7 +182,7 @@ def clear_display():
 def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     # f_path = "directory where images will be saved"
     # duration = duration in minutes of data collection
-    start_time = time()
+    start_time = time.time()
     elapsed_time = 0
     while elapsed_time < duration * 60: 
         if os.path.exists(fpath) and check_connection() == True:
@@ -198,7 +198,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
             while sd_missing == True:
                 sd_missing = os.path.exists(fpath)
                 sleep(1)
-        elapsed_time = time() - start_time()
+        elapsed_time = time.time() - start_time.time()
          
 #### Main Code ####
 
@@ -226,13 +226,13 @@ def main():
             print("Connecting to camera . . .")
             print_to_display(message = "Connecting to camera . . .")
             not_connected = True
-            start_time = time()
+            start_time = time.time()
             while not_connected == True:
                 connection_status = check_connection()
                 if connection_status == True:
                     not_connected = False
                 else:
-                    current_time = time()
+                    current_time = time.time()
                     if current_time - start_time > 60:
                         print("Camera frozen. Restarting . . . ")
                         print_to_display(message = "Camera frozen.\nRestarting system . . .")
@@ -242,7 +242,7 @@ def main():
                         print("Connecting to camera . . .")
                         print_to_display(message = "Connecting to camera . . .")
                         sleep(1)
-                        start_time = time()
+                        start_time = time.time()
                     else:
                         sleep(1)
             print("Camera connected.")
