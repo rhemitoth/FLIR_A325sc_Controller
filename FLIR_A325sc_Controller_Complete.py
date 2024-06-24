@@ -98,13 +98,7 @@ def focus(telnet_connection):
 
 #### Drawing an image on the e-ink display ####
 
-def print_to_display(deer_on = True, 
-	deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", 
-	message = "hello deer",
-	textX = 20,
-	textY = 50,
-	fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",
-	fontSize = 20):
+def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 50,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 20):
 	# This function is used to print out messages describing what the system is doing to the e-paper display
 	# deer_on = True, the messages will appear as text inside of a speech bubble coming from a cartoon of a roe deer (I'm using this system to capture images of roe deer and I thought it would be cute ¯\_(ツ)_/¯)
 	# deer_on = False, the message will appear as plain text 
@@ -185,8 +179,7 @@ def clear_display():
     epd.Clear()
 
 #### Save pictures #####
-def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",
-	duration = 30):
+def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
 	# f_path = "directory where images will be saved"
 	# duration = duration in minutes of data collection
 	start_time = time()
