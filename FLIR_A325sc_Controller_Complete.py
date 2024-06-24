@@ -98,7 +98,7 @@ def focus(telnet_connection):
 
 #### Drawing an image on the e-ink display ####
 
-def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 50,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 18):
+def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 25,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 18):
     # This function is used to print out messages describing what the system is doing to the e-paper display
     # deer_on = True, the messages will appear as text inside of a speech bubble coming from a cartoon of a roe deer (I'm using this system to capture images of roe deer and I thought it would be cute ¯\_(ツ)_/¯)
     # deer_on = False, the message will appear as plain text 
@@ -184,21 +184,21 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     # duration = duration in minutes of data collection
     start_time = time.time()
     elapsed_time = 0
-    while elapsed_time < duration * 60: 
-        if os.path.exists(fpath) and check_connection() == True:
-            print("Capturing image . . .")
-            save_image_spinnaker(directory = fpath, filetype = "tiff")
-            print ("Image saved.")
-            # wait 10 seconds before taking the next picture
-            sleep(10)
-        elif os.path.exists(fpath) == False:
-            print("WARNING: SD Card missing.")
+    while elapsed_time < duration * 60:
+    	if os.path.exists(fpath) == False:
+    		print("WARNING: SD Card missing.")
             print_to_display(message = "WARNING.\nNo SD card \ndetected.")
             sd_missing = True
             while sd_missing == True:
                 sd_missing = os.path.exists(fpath)
                 sleep(1)
-        elapsed_time = time.time() - start_time.time()
+        elif os.path.exists(fpath) and check_connection() == True:
+            print("Capturing image . . .")
+            save_image_spinnaker(directory = fpath, filetype = "tiff")
+            print ("Image saved.")
+            # wait 10 seconds before taking the next picture
+            sleep(10) 
+        elapsed_time = time - start_time
          
 #### Main Code ####
 
