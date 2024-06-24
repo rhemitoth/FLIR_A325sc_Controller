@@ -187,7 +187,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     while elapsed_time < duration * 60:
     	if os.path.exists(fpath) == False:
     		print("WARNING: SD Card missing.")
-            print_to_display(message = "WARNING.\nNo SD card \ndetected.")
+    		print_to_display(message = "WARNING.\nNo SD card \ndetected.")
             sd_missing = True
             while sd_missing == True:
                 sd_missing = os.path.exists(fpath)
