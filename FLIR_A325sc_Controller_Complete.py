@@ -116,34 +116,34 @@ def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/F
         #Create a blank image for drawing
         canvas = Image.new('1',(epd.width,epd.height),255)
         draw = ImageDraw.Draw(canvas)
-        
+
         # Load the bitmap image
         image_path = deer_path
         bmp_image = Image.open(image_path)
         bw_image = bmp_image.convert('1')
         bmp_width,bmp_height = bw_image.size
-        
+
         # Position to paste the bitmap image
         x_offset = 0
         y_offset = 0
-        
+
         # Paste the bitmap image onto the canvas
         canvas.paste(bw_image,(x_offset,y_offset))
-        
+
         # Load a font
         font_path = fontPath
         txt_font = ImageFont.truetype(font_path,fontSize)
-    
+
         # Define the text to display
         text = message
-        
+
         # Position to draw the text
         text_x = textX
         text_y = textY
-        
+
         # Draw the text on the canvas
         draw.text((text_x, text_y),text,font=txt_font,fill=0)
-        
+
         # Display the image on the e-Paper display
         epd.display_Fast(epd.getbuffer(canvas))
     else:
@@ -224,7 +224,7 @@ def main():
 			
 			# Pause code until camera is connected
 			print("Connecting to camera . . .")
-			print_to_display("Connecting to camera . . .")
+			print_to_display(message = "Connecting to camera . . .")
 			not_connected = True
 			start_time = time()
 			while not_connected == True:
@@ -235,12 +235,12 @@ def main():
 					current_time = time()
 					if current_time - start_time > 60:
 						print("Camera frozen. Restarting . . . ")
-						print_to_display("Camera frozen.\nRestarting system . . .")
+						print_to_display(message = "Camera frozen.\nRestarting system . . .")
 						relay.off()
 						sleep(60)
 						relay.on()
 						print("Connecting to camera . . .")
-						print_to_display("Connecting to camera . . .")
+						print_to_display(message = "Connecting to camera . . .")
 						sleep(1)
 						start_time = time()
 					else:
@@ -252,19 +252,19 @@ def main():
 				flir_ip = '169.254.0.2' 
 				tn = establish_telnet_connection(flir_ip)
 				print("Focusing camera . . .")
-				print_to_display("Focusing camera . . .")
+				print_to_display(message = "Focusing camera . . .")
 				focus(tn)
 				print("Camera is focused.")
 
 			# Collect and image every 10 seconds for 30 minutes
-			print_to_display("Capturing images . . .")
+			print_to_display(message = "Capturing images . . .")
 			collect_data()
 
 
 		if current_motion == False:
 			relay.off() # turn off relay/power off camera
 			print("No motion detected. Camera off.")
-			print_to_display("No motion detected.\nPowering down.")
+			print_to_display(message = "No motion detected.\nPowering down.")
 			sleep(10) # prevents the camera from freezing from turning on/off to quickly
 			clear_display()
 			
