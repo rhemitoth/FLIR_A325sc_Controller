@@ -266,7 +266,6 @@ def main():
             print("No motion detected. Camera off.")
             print_to_display(message = "No motion detected.\nPowering down.")
             sleep(10) # prevents the camera from freezing from turning on/off to quickly
-            clear_display()
             
 if __name__ == '__main__':
     main()
