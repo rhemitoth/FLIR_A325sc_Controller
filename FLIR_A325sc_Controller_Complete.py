@@ -98,7 +98,7 @@ def focus(telnet_connection):
 
 #### Drawing an image on the e-ink display ####
 
-def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 50,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 15):
+def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 50,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 18):
     # This function is used to print out messages describing what the system is doing to the e-paper display
     # deer_on = True, the messages will appear as text inside of a speech bubble coming from a cartoon of a roe deer (I'm using this system to capture images of roe deer and I thought it would be cute ¯\_(ツ)_/¯)
     # deer_on = False, the message will appear as plain text 
@@ -193,7 +193,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
             sleep(10)
         elif os.path.exists(fpath) == False:
             print("WARNING: SD Card missing.")
-            print_to_display("WARNING.\nNo SD card detected.")
+            print_to_display(message = "WARNING.\nNo SD card \ndetected.")
             sd_missing = True
             while sd_missing == True:
                 sd_missing = os.path.exists(fpath)
@@ -264,7 +264,7 @@ def main():
         if current_motion == False:
             relay.off() # turn off relay/power off camera
             print("No motion detected. Camera off.")
-            print_to_display(message = "No motion detected.\nCamera off.")
+            print_to_display(message = "No motion\ndetected.\nCamera off.")
             sleep(10) # prevents the camera from freezing from turning on/off to quickly
             
 if __name__ == '__main__':
