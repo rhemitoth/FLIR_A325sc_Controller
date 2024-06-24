@@ -212,10 +212,10 @@ def main():
     
     while True:
         # Check if motion is detected
-        
+        previous_motion = False
         current_motion = pir.motion_detected
         
-        if current_motion == True:
+        if current_motion == True and previous_motion == False:
 
             # Turn on camera
             print("Motion detected. Turning on camera")
@@ -256,7 +256,6 @@ def main():
                 print("Camera is focused.")
 
             # Collect and image every 10 seconds for 30 minutes
-            print_to_display(message = "Capturing\nimages.")
             collect_data()
 
 
@@ -265,6 +264,7 @@ def main():
             print("No motion detected. Camera off.")
             print_to_display(message = "No motion\ndetected.\nCamera off.")
             sleep(10) # prevents the camera from freezing from turning on/off to quickly
+            previous_motion = False
             
 if __name__ == '__main__':
     main()
