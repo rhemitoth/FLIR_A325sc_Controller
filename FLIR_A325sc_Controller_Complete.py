@@ -205,7 +205,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
 def main():
 
     # Define PIR sensor GPIO pins on Raspberry Pi
-    pir = MotionSensor(24)
+    pir = MotionSensor(20)
     relay = gpiozero.OutputDevice(21, active_high = True, initial_value = False)
 
     # Main code 
