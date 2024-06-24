@@ -7,6 +7,7 @@ from gpiozero import MotionSensor # for controlling motion trigger
 from gpiozero import Button # for controlling button to focus camera
 import gpiozero # for controlling relay
 from time import sleep # for pausing code
+from time import time
 import os # for checking if directory for image export exists (avoids errors while swapping SD cards)
 
 
@@ -95,58 +96,91 @@ def main():
 	relay = gpiozero.OutputDevice(21, active_high = True, initial_value = False)
 
 
-	# Main code
+	# Main code 
+	
+	# Initialize previous  motion state
+	previous_motion = False
+	
 	while True:
 		# Check if motion is detected
-		initial_motion = pir.motion_detected
 		
-		if initial_motion == True:
+		current_motion = pir.motion_detected
+		
+		if previous_motion == True and current_motion == False:
+			sleep(10) # prevents camera from freezing up from turning off/on too quickly
+		
+		if current_motion == True:
 
 			# Turn on indicator light if motion is detected
 			led.on()
 
 			# Turn on camera
-			print("turning on camera")
+			print("Motion detected. Turning on camera")
 			relay.on()
-			print("relay on")
-			sleep(10)
 			
+			# Pause code until camera is connected
+			print("Connecting to camera . . .")
+			not_connected = True
+			start_time = time()
+			while not_connected == True:
+				connection_status = check_connection()
+				if connection_status == True:
+					not_connected = False
+				else:
+					current_time = time()
+					if current_time - start_time > 60:
+						print("Camera frozen. Restarting . . . ")
+						relay.off()
+						sleep(60)
+						relay.on()
+						print("Connecting to camera . . .")
+						sleep(1)
+						start_time = time()
+					else:
+						sleep(1)
+			print("Camera connected.")
 
-			# Check if camera is connected
-			connection_status = check_connection()
-
-			# Focus the camera
-			if connection_status == True:
+		# Focus the camera
+			if check_connection() == True:
 				flir_ip = '169.254.0.2' 
 				tn = establish_telnet_connection(flir_ip)
+				print("Focusing camera . . .")
 				focus(tn)
+				print("Camera is focused.")
 
 			# while motion is still detected, collect an image every 10 seconds
-			still_moving = initial_motion
+			still_moving = current_motion
 			while still_moving == True:
 				fpath = "/media/moorcroftlab/9016-4EF8/"
-				if os.path.exists(fpath) and connection_status == True:
+				if os.path.exists(fpath) and check_connection() == True:
+					print("Capturing image . . .")
 					save_image_spinnaker(directory = fpath, filetype = "tiff")
+					print ("Image saved.")
 					# blink LED after saving an image
 					led.off()
 					sleep(1)
 					led.on()
-
-				# wait 5 seconds before taking the next picture
-				sleep(5) 
+					# wait 5 seconds before taking the next picture
+					sleep(5)
+				elif os.path.exists(fpath) == False:
+					print("WARNING: SD Card missing.")
+					sleep(1)
 
 				# check to see if motion is still detected before taking another picture
 				# Exit while loop if motion is no longer detected
 				still_moving = pir.motion_detected
 
-			# Turn relay off
-			relay.off()
-			sleep(1)
-
-		if initial_motion == False:
+		if current_motion == False:
 			# Turn of indicator light if no motion is detected
 			led.off()
 			sleep(1)
+			
+			# Turn relay off
+			relay.off()
+			print("No motion detected. Camera off.")
+			sleep(2)
+		
+		previous_motion = current_motion
 			
 			
 			
