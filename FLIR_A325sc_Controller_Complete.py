@@ -98,7 +98,7 @@ def focus(telnet_connection):
 
 #### Drawing an image on the e-ink display ####
 
-def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/raspi_text_background.bmp", message = "hello deer",textX = 20,textY = 25,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 18):
+def print_to_display(deer_on = True, deer_path = "/home/moorcroftlab/Documents/FLIR/FLIR_A325sc_Controller/raspi_text_background_wlogo.bmp", message = "hello deer",textX = 20,textY = 60,fontPath = "/usr/share/fonts/X11/Type1/NimbusMonoPS-Bold.pfb",fontSize = 18):
     # This function is used to print out messages describing what the system is doing to the e-paper display
     # deer_on = True, the messages will appear as text inside of a speech bubble coming from a cartoon of a roe deer (I'm using this system to capture images of roe deer and I thought it would be cute ¯\_(ツ)_/¯)
     # deer_on = False, the message will appear as plain text 
@@ -184,20 +184,29 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     # duration = duration in minutes of data collection
     start_time = time.time()
     elapsed_time = 0
+    check_sd_count = 0
+    image_caputre_count = 0
     while elapsed_time < duration * 60:
     	if os.path.exists(fpath) == False:
     		print("WARNING: SD Card missing.")
-    		print_to_display(message = "WARNING.\nNo SD card \ndetected.")
+    		if check_sd_count == 0:
+    		    print_to_display(message = "WARNING.\nNo SD card \ndetected.")
+    		check_sd_count += 1
     		sd_missing = True
     		while sd_missing == True:
     			sd_missing = os.path.exists(fpath)
     			sleep(1)
     	elif os.path.exists(fpath) and check_connection() == True:
-    		print("Capturing image . . .")
-    		save_image_spinnaker(directory = fpath, filetype = "tiff")
-    		print ("Image saved.")
-    		sleep(10)
-    	elapsed_time = time.time() - start_time
+		    if image_caputre_count == 0:
+			    print_to_display(message = "Capturing \nimages.")
+			print("Capturing image . . .")
+    	    save_image_spinnaker(directory = fpath, filetype = "tiff")
+    	    print ("Image saved.")
+    	    sleep(10)
+    	    image_capture_count += 1
+        elapsed_time = time.time() - start_time
+    # reset the global count
+    count = 0
          
 #### Main Code ####
 
@@ -209,8 +218,9 @@ def main():
 
     # Main code 
 
+    count = 0 # used to check if while loop is on first iteration
     
-    while True:
+    while True: 
         # Check if motion is detected
         previous_motion = False
         current_motion = pir.motion_detected
@@ -256,17 +266,25 @@ def main():
                 print("Camera is focused.")
 
             # Collect and image every 10 seconds for 30 minutes
-            collect_data()
+            collect_data(duration = 1)
 
 
         if current_motion == False:
             relay.off() # turn off relay/power off camera
             print("No motion detected. Camera off.")
-            print_to_display(message = "No motion\ndetected.\nCamera off.")
-            sleep(10) # prevents the camera from freezing from turning on/off to quickly
+            if count == 0:
+                print_to_display(message = "No motion\ndetected.\nCamera off.")
+            sleep(1) # prevents the camera from freezing from turning on/off to quickly
             previous_motion = False
+        
+        # THis prevents the display from constantly refreshing when there is no motion
+        count += 1
+        if count == 2:
+            count = count -1
             
 if __name__ == '__main__':
     main()
+
+
 
 
