@@ -187,23 +187,23 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     check_sd_count = 0
     image_caputre_count = 0
     while elapsed_time < duration * 60:
-    	if os.path.exists(fpath) == False:
-    		print("WARNING: SD Card missing.")
-    		if check_sd_count == 0:
-    		    print_to_display(message = "WARNING.\nNo SD card \ndetected.")
-    		check_sd_count += 1
-    		sd_missing = True
-    		while sd_missing == True:
-    			sd_missing = os.path.exists(fpath)
-    			sleep(1)
-    	elif os.path.exists(fpath) and check_connection() == True:
-		    if image_caputre_count == 0:
-			    print_to_display(message = "Capturing \nimages.")
-			print("Capturing image . . .")
-    	    save_image_spinnaker(directory = fpath, filetype = "tiff")
-    	    print ("Image saved.")
-    	    sleep(10)
-    	    image_capture_count += 1
+        if os.path.exists(fpath) == False:
+            print("WARNING: SD Card missing.")
+            if check_sd_count == 0:
+                print_to_display(message = "WARNING.\nNo SD card \ndetected.")
+            check_sd_count += 1
+            sd_missing = True
+            while sd_missing == True:
+                sd_missing = os.path.exists(fpath)
+                sleep(1)
+        elif os.path.exists(fpath) and check_connection() == True:
+            if image_caputre_count == 0:
+                print_to_display(message = "Capturing \nimages.")
+            print("Capturing image . . .")
+            save_image_spinnaker(directory = fpath, filetype = "tiff")
+            print ("Image saved.")
+            sleep(10)
+            image_capture_count += 1
         elapsed_time = time.time() - start_time
     # reset the global count
     count = 0
