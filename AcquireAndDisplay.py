@@ -127,7 +127,6 @@ def main():
             flir_ip = '169.254.0.2' 
             tn = establish_telnet_connection(flir_ip)
             print("Focusing camera . . .")
-            print_to_display(message = "Focusing\ncamera.")
             focus(tn)
             print("Camera is focused.")
 
