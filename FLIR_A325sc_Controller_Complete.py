@@ -185,7 +185,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
     start_time = time.time()
     elapsed_time = 0
     check_sd_count = 0
-    image_caputre_count = 0
+    image_capture_count = 0
     while elapsed_time < duration * 60:
         if os.path.exists(fpath) == False:
             print("WARNING: SD Card missing.")
@@ -197,7 +197,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
                 sd_missing = os.path.exists(fpath)
                 sleep(1)
         elif os.path.exists(fpath) and check_connection() == True:
-            if image_caputre_count == 0:
+            if image_capture_count == 0:
                 print_to_display(message = "Capturing \nimages.")
             print("Capturing image . . .")
             save_image_spinnaker(directory = fpath, filetype = "tiff")
@@ -205,8 +205,6 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
             sleep(10)
             image_capture_count += 1
         elapsed_time = time.time() - start_time
-    # reset the global count
-    count = 0
          
 #### Main Code ####
 
@@ -244,7 +242,7 @@ def main():
                     current_time = time.time()
                     if current_time - start_time > 60:
                         print("Camera frozen. Restarting . . . ")
-                        print_to_display(message = "Camera frozen.\nRestarting system.")
+                        print_to_display(message = "No cam\ndetected.\nRestarting\nsystem.", fontSize = 16)
                         relay.off()
                         sleep(60)
                         relay.on()
@@ -267,6 +265,9 @@ def main():
 
             # Collect and image every 10 seconds for 30 minutes
             collect_data(duration = 1)
+            
+            # Update global count variable
+            count = 0
 
 
         if current_motion == False:
@@ -276,11 +277,10 @@ def main():
                 print_to_display(message = "No motion\ndetected.\nCamera off.")
             sleep(1) # prevents the camera from freezing from turning on/off to quickly
             previous_motion = False
-        
-        # THis prevents the display from constantly refreshing when there is no motion
-        count += 1
-        if count == 2:
-            count = count -1
+            # This prevents the display from constantly refreshing when there is no motion
+            count +=1
+            if count == 2:
+                count -= 1
             
 if __name__ == '__main__':
     main()
