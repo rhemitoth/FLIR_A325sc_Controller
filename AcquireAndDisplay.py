@@ -9,6 +9,7 @@ import PySpin # FLIR spinnaker SDK
 
 # Other modules
 import matplotlib
+from PIL import Image,ImageDraw,ImageFont
 
 #### Connect to Camera and Grab Image ####
 # Function uses the PySpin library/FLIR Spinnaker SDK
@@ -34,11 +35,13 @@ def display_image(pause = 5):
         # Grab image
         image_result = cam.GetNextImage()
 
-        # Conver to array
-        image_data = image_result.GetNDArray()
+        # Save image
+        image_result.Save("temp.tiff")
 
-        # Plot image
-        plt.imshow(image_data, cmap='gray')
+        import matplotlib.pyplot as plt
+
+        img=mpimg.imread('temp.TIF ')
+        imgplot = plt.imshow(img)
 
         # Pause
         sleep(pause)
