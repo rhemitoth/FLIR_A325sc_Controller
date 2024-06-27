@@ -10,7 +10,8 @@ import PySpin # FLIR spinnaker SDK
 # Other modules
 import matplotlib
 from PIL import Image,ImageDraw,ImageFont
-
+import time
+from time import sleep
 #### Connect to Camera and Grab Image ####
 # Function uses the PySpin library/FLIR Spinnaker SDK
 # to connect to the camera and grab an image
