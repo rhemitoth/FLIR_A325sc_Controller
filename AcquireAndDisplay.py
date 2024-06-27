@@ -12,6 +12,8 @@ import matplotlib
 from PIL import Image,ImageDraw,ImageFont
 import time
 from time import sleep
+import matplotlib.image as mpimg
+
 #### Connect to Camera and Grab Image ####
 # Function uses the PySpin library/FLIR Spinnaker SDK
 # to connect to the camera and grab an image
@@ -39,7 +41,6 @@ def display_image(pause = 5):
         # Save image
         image_result.Save("temp.tiff")
 
-        import matplotlib.pyplot as plt
 
         img=mpimg.imread('temp.TIF ')
         imgplot = plt.imshow(img)
