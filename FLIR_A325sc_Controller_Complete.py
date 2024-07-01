@@ -95,6 +95,10 @@ def save_image_spinnaker(directory, filetype, burst = True, burst_num = 3):
             filename1 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst1" + "." + filetype
             filename2 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst2" + "." + filetype
             filename3 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst3" + "." + filetype
+            if os.path.exists(directory):
+                image_result_1.Save(filename1)
+                image_result_2.Save(filename2)
+                image_result_3.Save(filename3)
             image_result1.Release()
             image_result_2.Release()
             image_result_3.Release()
