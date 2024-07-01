@@ -66,13 +66,13 @@ def save_image_spinnaker(directory, filetype, burst = True, burst_num = 3):
             # Start aquisition
             cam.BeginAcquisition()
 
-            for(i in 1:burst_num):
-                
+            for i in range(0,burst_num):
+
                 # Grab image
                 image_result = cam.GetNextImage()
         
                 # Save image
-                #filename = directory + 'burst' + str(i+1) + "-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
+                filename = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) +  "_burst" + str(i+1) + "." + filetype
                 if os.path.exists(directory):
                     image_result.Save(filename)
 
