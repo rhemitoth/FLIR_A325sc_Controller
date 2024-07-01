@@ -60,55 +60,30 @@ def save_image_spinnaker(directory, filetype, burst = True, burst_num = 3):
             # Deinitalize camera
             cam.DeInit()
         else:
-            #for i in range(0,burst_num):
-                # Initialize the camera
-                #cam.Init()
+            # Initialize the camera
+            cam.Init()
 
-                # Start aquisition
-                #cam.BeginAcquisition()
+            # Start aquisition
+            cam.BeginAcquisition()
 
-            
+            for(i in 1:burst_num):
+                
                 # Grab image
-                #image_result = cam.GetNextImage()
+                image_result = cam.GetNextImage()
         
                 # Save image
                 #filename = directory + 'burst' + str(i+1) + "-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
-                #if os.path.exists(directory):
-                    #image_result.Save(filename)
+                if os.path.exists(directory):
+                    image_result.Save(filename)
 
                 # Release image
-                #image_result.Release()
+                image_result.Release()
 
-                # Stop Acquisition
-                #cam.EndAcquisition()
-
-                # Deinitalize camera
-                #cam.DeInit()
-            cam.Init()
-            cam.BeginAcquisition()
-            dt1 = str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
-            image_result_1 = cam.GetNextImage()
-            dt2 = str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
-            image_result_2 = cam.GetNextImage()
-            dt3 = str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
-            image_result_3 = cam.GetNextImage()
-            filename1 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst1" + "." + filetype
-            filename2 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst2" + "." + filetype
-            filename3 = directory + "file-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "_burst3" + "." + filetype
-            if os.path.exists(directory):
-                image_result_1.Save(filename1)
-                image_result_2.Save(filename2)
-                image_result_3.Save(filename3)
-            image_result1.Release()
-            image_result_2.Release()
-            image_result_3.Release()
+            # Stop Acquisition
             cam.EndAcquisition()
+
+            # Deinitalize camera
             cam.DeInit()
-
-
-
-
-
 
     finally:
         # Release system instance
