@@ -25,7 +25,7 @@ import time
 # Function uses the PySpin library/FLIR Spinnaker SDK
 # to connect to the camera and grab an image
 
-def save_image_spinnaker(directory, filetype):
+def save_image_spinnaker(directory, filetype, burst = True, burst_num = 3):
     # Argument 'directory' specifies directory where image will be saved
     # Argument 'filetype' specifies filetype of image to be saves ('png', 'jpg', 'tiff', etc)
     
@@ -36,28 +36,56 @@ def save_image_spinnaker(directory, filetype):
     cam = system.GetCameras()[0]
     
     try:
-        # Initialize the camera
-        cam.Init()
+        if burst == False:
+            # Initialize the camera
+            cam.Init()
 
-        # Start aquisition
-        cam.BeginAcquisition()
+            # Start aquisition
+            cam.BeginAcquisition()
 
-        # Grab image
-        image_result = cam.GetNextImage()
-    
-        # Save image
-        filename = directory + 'file-' + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
-        if os.path.exists(directory):
-            image_result.Save(filename)
+            # Grab image
+            image_result = cam.GetNextImage()
+        
+            # Save image
+            filename = directory + 'file-' + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
+            if os.path.exists(directory):
+                image_result.Save(filename)
 
-        # Release image
-        image_result.Release()
+            # Release image
+            image_result.Release()
 
-        # Stop Acquisition
-        cam.EndAcquisition()
+            # Stop Acquisition
+            cam.EndAcquisition()
 
-        # Deinitalize camera
-        cam.DeInit()
+            # Deinitalize camera
+            cam.DeInit()
+        else:
+            for i in range(0,burst_num):
+                # Initialize the camera
+                cam.Init()
+
+                # Start aquisition
+                cam.BeginAcquisition()
+
+            
+                # Grab image
+                image_result = cam.GetNextImage()
+        
+                # Save image
+                filename = directory + 'burst' + str(i+1) + "-" + str(datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + "." + filetype
+                if os.path.exists(directory):
+                    image_result.Save(filename)
+
+                # Release image
+                image_result.Release()
+
+                # Stop Acquisition
+                cam.EndAcquisition()
+
+                # Deinitalize camera
+                cam.DeInit()
+
+
 
     finally:
         # Release system instance
@@ -179,9 +207,10 @@ def clear_display():
     epd.Clear()
 
 #### Save pictures #####
-def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
+def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 5, frequency = 5):
     # f_path = "directory where images will be saved"
     # duration = duration in minutes of data collection
+    # frequency = frequency at which image bursts are captured
     start_time = time.time()
     elapsed_time = 0
     check_sd_count = 0
@@ -202,7 +231,7 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 30):
             print("Capturing image . . .")
             save_image_spinnaker(directory = fpath, filetype = "tiff")
             print ("Image saved.")
-            sleep(10)
+            sleep(frequency)
             image_capture_count += 1
         elapsed_time = time.time() - start_time
          
