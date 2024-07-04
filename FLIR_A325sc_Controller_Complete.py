@@ -20,6 +20,7 @@ from PIL import Image,ImageDraw,ImageFont
 # Other modules
 from time import sleep # for pausing code
 import time
+import subprocess # used to check if SD card is connected
 
 #### Connect to Camera and Grab Image ####
 # Function uses the PySpin library/FLIR Spinnaker SDK
@@ -203,9 +204,52 @@ def clear_display():
     epd = epd2in7_V2.EPD()
     epd.init()
     epd.Clear()
+    
+#### Check if SD Card is Connected ####
+def is_sd_card_connected():
+    def list_block_devices():
+        # Execute lsblk command to list block devices
+        result = subprocess.run(['lsblk', '-o', 'NAME,TYPE'], capture_output=True, text=True)
+        return result.stdout
+
+    def find_sd_card(devices_info):
+        # Parse the output of lsblk to find the SD card
+        lines = devices_info.strip().split('\n')
+        for line in lines:
+            if 'sd' in line:  # Typically, SD cards will be named /dev/sdX where X is a letter
+                parts = line.split()
+                device_name = parts[0]
+                device_type = parts[1]
+                
+                if device_type == 'disk':
+                    return True
+        return False
+
+    devices_info = list_block_devices()
+    return find_sd_card(devices_info)
+
+#### Find SD Mount Point ####
+def find_sd_card_mount_point():
+    try:
+        # Use the 'df' command to list all mounted filesystems
+        output = subprocess.check_output(['df', '-h']).decode('utf-8')
+        print(output)
+        # Split the output into lines and iterate over them
+        for line in output.splitlines():
+            # Check if the line contains '/media' or '/mnt'
+            if '/media' in line or '/mnt' in line:
+                # Split the line into columns and get the mount point
+                columns = line.split()
+                mount_point = columns[-1]
+                # You can add further checks to identify the SD card specifically
+                print(f"Possible SD card mount point: {mount_point}")
+                return(mount_point)
+                
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred: {e}")
 
 #### Save pictures #####
-def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 5, frequency = 5):
+def collect_data(fpath = "/media/moorcroftlab/9016-4EF82/",duration = 5, frequency = 5):
     # f_path = "directory where images will be saved"
     # duration = duration in minutes of data collection
     # frequency = frequency at which image bursts are captured
@@ -213,8 +257,10 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 5, frequenc
     elapsed_time = 0
     check_sd_count = 0
     image_capture_count = 0
+    sd_mnt_pt = find_sd_card_mount_point()
     while elapsed_time < duration * 60:
-        if os.path.exists(fpath) == False:
+        if is_sd_card_connected() == False:
+            image_capture_count = 0 # reset image capture count 
             print("WARNING: SD Card missing.")
             if check_sd_count == 0:
                 print_to_display(message = "WARNING.\nNo SD card \ndetected.")
@@ -223,7 +269,9 @@ def collect_data(fpath = "/media/moorcroftlab/9016-4EF8/",duration = 5, frequenc
             while sd_missing == True:
                 sd_missing = os.path.exists(fpath)
                 sleep(1)
-        elif os.path.exists(fpath) and check_connection() == True:
+        elif is_sd_card_connected() == True and check_connection() == True:
+            check_sd_count = 0 # reset check SD count
+            fpath = find_sd_card_mount_point()
             if image_capture_count == 0:
                 print_to_display(message = "Capturing \nimages.")
             print("Capturing image . . .")
