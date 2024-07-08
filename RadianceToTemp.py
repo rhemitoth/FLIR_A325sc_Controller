@@ -1,3 +1,12 @@
+# ================== Summary =======================
+## The script RadianceToTemp.py is used to convert radiance measurements (raw data from the FLIR camera) to units of temperature (degrees Celcius).
+## As input, this script accepts tiffs of radiance obtained from a thermal camera. 
+## In order to convert from radiance to surface temperature, you will need to know the following:
+## - The distance between the camera and the subject (in meters)
+## - The temperature of the air (degrees Celcius)
+## - The relative humidity of the air (% RH)
+## - Emissivity of the subject (usually 0.95 for an animal)
+## - 
 # packages
 import imageio
 import math
