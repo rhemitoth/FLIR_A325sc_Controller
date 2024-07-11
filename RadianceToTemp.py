@@ -104,6 +104,7 @@ def get_Ta(weather_dat, datetime):
     return air_temp
 
 def get_RH(weather_dat, datetime):
+    
     """
     Finds the humidity at the time of image capture.
     
@@ -120,6 +121,69 @@ def get_RH(weather_dat, datetime):
     closest_row = weather_dat.loc[weather_dat['time_diff'].idxmin()]
     hum = closest_row['RH']
     return hum
+
+# ========================= Estimate Solar Radiation ===================================
+
+def get_lai(lai_dat,datetime):
+	
+	"""
+    Finds the closest LAI at the time of image capture.
+    
+    Args:
+    lai_dat (pandas df): Pandas dataframe of lai timeseries (Generated via GEE script. See LAI_timeseries.js)
+    datetime (datetime): Timestamp of the image capture
+    
+    Returns:
+    float: lai at the time of image capture
+    """
+
+    given_time = pd.to_datetime(datetime)
+    lai_dat['timestamp'] = pd.to_datetime(lai_dat['timestamp'])
+    lai_dat['time_diff'] = (lai_dat['timestamp'] - given_time).abs()
+    closest_row = lai_dat.loc[lai_dat['time_diff'].idxmin()]
+    lai = closest_row['LAI']
+    return lai
+
+def get_atmospheric_trans(at_dat, datetime):
+
+	"""
+    Finds the closest atmospheric transmissivity at the time of image capture.
+    
+    Args:
+    at_dat (pandas df): Pandas dataframe of atmospheric transmissivity timeseries (generated via GEE script. See atmospheric_transmissivity_timeseries.js)
+    datetime (datetime): Timestamp of the image capture
+    
+    Returns:
+    float: atmospheric transmissivity at the time of image capture
+    
+    """
+
+    given_time = pd.to_datetime(datetime)
+    at_dat['timestamp'] = pd.to_datetime(at_dat['timestamp'])
+    at_dat['time_diff'] = (at_dat['timestamp'] - given_time).abs()
+    closest_row = at_dat.loc[lai_dat['time_diff'].idxmin()]
+    a_trans = closest_row['atmospheric_transmissivity']
+    return a_trans
+
+def get_albedo(albedo_dat,datetime):
+	"""
+    Finds the closest land surface albedo at the time of image capture.
+    
+    Args:
+    albedo_dat (pandas df): Pandas dataframe of an albedo timeseries (generated via GEE script. See albedo_timeseries.js)
+    datetime (datetime): Timestamp of the image capture
+    
+    Returns:
+    float: albedo at the time of image capture
+    
+    """
+
+    given_time = pd.to_datetime(datetime)
+    albedo_dat['timestamp'] = pd.to_datetime(albedo_dat['timestamp'])
+    albedo_dat['time_diff'] = (albedo_dat['timestamp'] - given_time).abs()
+    closest_row = albedo_dat.loc[lai_dat['time_diff'].idxmin()]
+    albedo = closest_row['albedo']
+    return albedo
 
 # ========================= Longwave Radiation from the Surroundings ==================
 
