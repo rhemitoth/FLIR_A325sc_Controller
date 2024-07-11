@@ -206,7 +206,40 @@ get_solar_radiation <- function(dt,
   
 }
 
-# Test example:
+
+# Solar Radiation Time Series ---------------------------------------------
+
+solarad_timeseries <- function(timestamps,
+                               LAT,
+                               LON,
+                               SLOPE,
+                               SLOPE_ASPECT,
+                               HEMISPHERE,
+                               atmospheric_transmissivity,
+                               elev,
+                               albedo){
+  
+  solrads <- sapply(X = timestamps, 
+                    FUN = get_solar_radiation,
+                    lat = LAT,
+                    lon = LON,
+                    slope = SLOPE,
+                    slope_aspect = SLOPE_ASPECT,
+                    hemisphere = HEMISPHERE,
+                    ATMOSPHERIC_TRANSMISSIVITY = atmospheric_transmissivity,
+                    ELEV = elev,
+                    ALBEDO = albedo)
+  
+  return(solrads)
+  
+}
+
+  
+  # Test example:
 # get_solar_radiation(dt = "2024-07-11 12:11:00", lat = 46, lon = 11, slope = 40,
 #                     slope_aspect =  90, hemisphere = "north", ELEV = 100, ALBEDO = 0.1,
 #                     ATMOSPHERIC_TRANSMISSIVITY = 0.8)
+
+ts <- c("2024-07-01 12:00:00", "2024-07-10 13:00:01")
+
+solarad_timeseries(timestamps = ts, LAT = 46, LON = 11, SLOPE = 10, SLOPE_ASPECT = 90, HEMISPHERE = "north", atmospheric_transmissivity = 0.8, elev = 300, albedo = 0.1)
